@@ -1,8 +1,6 @@
 import User from '../models/User.js';
 
-// @desc    Get all users
-// @route   GET /api/v1/admin/users
-// @access  Private/Admin
+//    Get all users
 export const getUsers = async (req, res) => {
     try {
         const users = await User.find().select('-password');
@@ -12,9 +10,7 @@ export const getUsers = async (req, res) => {
     }
 };
 
-// @desc    Update user role
-// @route   PUT /api/v1/admin/users/:id
-// @access  Private/Admin
+//     Update user role
 export const updateUserRole = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);

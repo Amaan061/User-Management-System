@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -31,13 +34,15 @@ const userSchema = new mongoose.Schema({
         enum: ['farm_admin', 'farm_manager', 'farm_technician', 'user'],
         default: 'user'
     },
-    refreshTokens: [{
-        token: String,
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    }]
+    isActive: {
+        type: Boolean,
+        default: true,
+        description: 'Indicates if the user is currently active in the system'
+    },
+    refreshToken: {
+        type: String,
+        default: null
+    }
 }, {
     timestamps: true
 });
@@ -51,45 +56,36 @@ userSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Method to compare password
+// Compare password method
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Generate JWT token
-userSchema.methods.generateAccessToken = function() {
-    return jwt.sign(
-        { id: this._id, role: this.role },
+// Generate tokens
+userSchema.methods.generateToken = async function() {
+    if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+        throw new Error('JWT secrets not configured in environment variables');
+    }
+    
+    // Generate access token
+    const accessToken = jwt.sign(
+        { id: this._id, role: this.role, email: this.email },
         process.env.JWT_ACCESS_SECRET,
-        { expiresIn: process.env.JWT_ACCESS_EXPIRE }
+        { expiresIn: '15m' }
     );
-};
 
-// Generate refresh token
-userSchema.methods.generateRefreshToken = function() {
-    return jwt.sign(
-        { id: this._id },
+    // Generate refresh token
+    const refreshToken = jwt.sign(
+        { id: this._id, email: this.email },
         process.env.JWT_REFRESH_SECRET,
-        { expiresIn: process.env.JWT_REFRESH_EXPIRE }
+        { expiresIn: '7d' }
     );
-};
 
-// Generate both tokens and save refresh token
-userSchema.methods.generateTokens = async function() {
-    const accessToken = this.generateAccessToken();
-    const refreshToken = this.generateRefreshToken();
-    
-    // Save refresh token to database
-    this.refreshTokens.push({ token: refreshToken });
+    // Save refresh token to user document
+    this.refreshToken = refreshToken;
     await this.save();
-    
+
     return { accessToken, refreshToken };
-};
-
-// Remove refresh token
-userSchema.methods.removeRefreshToken = async function(token) {
-    this.refreshTokens = this.refreshTokens.filter(t => t.token !== token);
-    await this.save();
 };
 
 const User = mongoose.model('User', userSchema);

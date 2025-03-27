@@ -4,12 +4,20 @@ import User from '../models/User.js';
 
 export const createTask = async (req, res) => {
     try {
-        const { title, description, assignedTo, deadline, priority } = req.body;
+        const { title, description, assignedTo, deadline } = req.body;
 
-        // Verifying that the  technician exists...
-        const technician = await User.findOne({ _id: assignedTo, role: 'farm_technician' });
+        // Check if the assigned technician exists and is active
+        const technician = await User.findOne({ 
+            _id: assignedTo, 
+            role: 'farm_technician',
+            isActive: true 
+        });
+
         if (!technician) {
-            return res.status(400).json({ message: 'Invalid technician' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Active technician not found' 
+            });
         }
 
         const task = await Task.create({
@@ -17,13 +25,19 @@ export const createTask = async (req, res) => {
             description,
             assignedTo,
             assignedBy: req.user._id,
-            deadline,
-            priority
+            deadline: new Date(deadline)
         });
 
-        res.status(201).json(task);
+        res.status(201).json({
+            success: true,
+            task
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error creating task:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error creating task' 
+        });
     }
 };
 
@@ -31,21 +45,38 @@ export const createTask = async (req, res) => {
 export const getManagerTasks = async (req, res) => {
     try {
         const tasks = await Task.find({ assignedBy: req.user._id })
-            .populate('assignedTo', 'firstName lastName email')
-            .sort({ createdAt: -1 });
-        res.json(tasks);
+            .populate('assignedTo', 'firstName lastName email');
+        
+        res.json({
+            success: true,
+            tasks
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error fetching tasks' 
+        });
     }
 };
 
 
 export const getTechnicians = async (req, res) => {
     try {
-        const technicians = await User.find({ role: 'farm_technician' })
-            .select('-password');
-        res.json(technicians);
+        const technicians = await User.find({ 
+            role: 'farm_technician',
+            isActive: true 
+        }).select('firstName lastName email');
+
+        res.json({
+            success: true,
+            technicians
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching technicians:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error fetching technicians' 
+        });
     }
 }; 

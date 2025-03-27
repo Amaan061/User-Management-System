@@ -1,8 +1,6 @@
 import Task from '../models/Task.js';
 
-// @desc    Get all tasks assigned to technician
-// @route   GET /api/v1/technician/tasks
-// @access  Private/Technician
+
 export const getTechnicianTasks = async (req, res) => {
     try {
         const tasks = await Task.find({ assignedTo: req.user._id })
@@ -14,9 +12,7 @@ export const getTechnicianTasks = async (req, res) => {
     }
 };
 
-// @desc    Update task status
-// @route   PUT /api/v1/technician/tasks/:id
-// @access  Private/Technician
+
 export const updateTaskStatus = async (req, res) => {
     try {
         const task = await Task.findOne({ 

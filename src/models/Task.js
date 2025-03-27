@@ -25,11 +25,6 @@ const taskSchema = new mongoose.Schema({
         enum: ['pending', 'in_progress', 'completed'],
         default: 'pending'
     },
-    priority: {
-        type: String,
-        enum: ['low', 'medium', 'high'],
-        default: 'medium'
-    },
     deadline: {
         type: Date,
         required: [true, 'Task deadline is required']
@@ -41,9 +36,6 @@ const taskSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for efficient queries
-taskSchema.index({ assignedTo: 1, status: 1 });
-taskSchema.index({ deadline: 1 });
 
 const Task = mongoose.model('Task', taskSchema);
 
