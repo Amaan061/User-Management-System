@@ -22,13 +22,13 @@ A robust user management system built with Node.js, Express, and MongoDB, featur
 
 - Node.js >= 19
 - MongoDB
-- npm or yarn
+- npm 
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:Amaan061/User-Management-System.git
 cd user-management-system
 ```
 
@@ -96,12 +96,8 @@ npm test
 - Request rate limiting
 - Security headers with helmet
 - CORS configuration
-- Input validation and sanitization
+- Input validation
 
 ## Error Handling
 
 The application includes a centralized error handling middleware that catches and processes all errors, providing consistent error responses across the API.
-
-## License
-
-ISC 
