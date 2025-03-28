@@ -1,22 +1,20 @@
 import Task from '../models/Task.js';
 import User from '../models/User.js';
 
-
 export const createTask = async (req, res) => {
     try {
         const { title, description, assignedTo, deadline } = req.body;
 
-        // Check if the assigned technician exists and is active
+        // Check if the assigned technician exists
         const technician = await User.findOne({ 
             _id: assignedTo, 
-            role: 'farm_technician',
-            isActive: true 
+            role: 'farm_technician'
         });
 
         if (!technician) {
             return res.status(404).json({ 
                 success: false, 
-                message: 'Active technician not found' 
+                message: 'Technician not found' 
             });
         }
 
@@ -41,7 +39,6 @@ export const createTask = async (req, res) => {
     }
 };
 
-
 export const getManagerTasks = async (req, res) => {
     try {
         const tasks = await Task.find({ assignedBy: req.user._id })
@@ -60,12 +57,10 @@ export const getManagerTasks = async (req, res) => {
     }
 };
 
-
 export const getTechnicians = async (req, res) => {
     try {
         const technicians = await User.find({ 
-            role: 'farm_technician',
-            isActive: true 
+            role: 'farm_technician'
         }).select('firstName lastName email');
 
         res.json({
@@ -79,4 +74,4 @@ export const getTechnicians = async (req, res) => {
             message: 'Error fetching technicians' 
         });
     }
-}; 
+};

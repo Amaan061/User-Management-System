@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticate } from '../middleware/authenticate.js';
+import {checkRoles} from '../middleware/checkRoles.js'
 import { getUserProfile, updateUserProfile } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -12,4 +13,4 @@ router.get('/profile', authenticate, getUserProfile);
 //    Update user profile
 router.put('/profile', authenticate, updateUserProfile);
 
-export default router; 
+export default router;  

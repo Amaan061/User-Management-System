@@ -34,11 +34,6 @@ const userSchema = new mongoose.Schema({
         enum: ['farm_admin', 'farm_manager', 'farm_technician', 'user'],
         default: 'user'
     },
-    isActive: {
-        type: Boolean,
-        default: true,
-        description: 'Indicates if the user is currently active in the system'
-    },
     refreshToken: {
         type: String,
         default: null
@@ -90,4 +85,4 @@ userSchema.methods.generateToken = async function() {
 
 const User = mongoose.model('User', userSchema);
 
-export default User; 
+export default User;

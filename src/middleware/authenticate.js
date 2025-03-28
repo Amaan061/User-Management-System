@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-const authenticate = async (req, res, next) => {
+ export const authenticate = async (req, res, next) => {
     try {
         let accessToken;
         
         // Check for access token in cookies first
         accessToken = req.cookies.accessToken;
-        console.log("access token is",accessToken);
+        
     
         if (!accessToken) {
             return res.status(401).json({ message: 'Not authorized, no access token' });
@@ -37,15 +37,7 @@ const authenticate = async (req, res, next) => {
     }
 };
 
-const authorize = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({
-                message: `User role ${req.user.role} is not authorized to access this route`
-            });
-        }
-        next();
-    };
-};
 
-export { authenticate, authorize }; 
+
+
+
