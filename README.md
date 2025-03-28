@@ -41,9 +41,10 @@ npm install
 PORT=3000
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/farm_management
-JWT_SECRET=your_jwt_secret_key_here
-JWT_EXPIRES_IN=24h
-SERVER_URL=http://localhost:3000
+JWT_ACCESS_SECRET=your_access_secret_key_here
+JWT_REFRESH_SECRET=your_refresh_secret_key_here
+
+
 ```
 
 ## Running the Application
