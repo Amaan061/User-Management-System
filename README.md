@@ -15,7 +15,6 @@ A robust user management system built with Node.js, Express, and MongoDB, featur
 - RESTful API endpoints
 - Input validation and sanitization
 - Error handling middleware
-- Security features (helmet, cors)
 - API request logging
 
 ## Prerequisites
