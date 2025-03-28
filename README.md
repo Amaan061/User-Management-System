@@ -54,10 +54,6 @@ Development mode:
 npm run dev
 ```
 
-Production mode:
-```bash
-npm start
-```
 
 ## API Endpoints
 
@@ -82,12 +78,6 @@ npm start
 - GET /api/user/profile - Get user profile
 - PUT /api/user/profile - Update user profile
 
-## Testing
-
-Run tests:
-```bash
-npm test
-```
 
 ## Security Features
 
